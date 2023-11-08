@@ -1,1 +1,1 @@
-## Here I run the algo-study 
+## stat forecasting team related projects
