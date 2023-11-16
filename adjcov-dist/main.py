@@ -13,18 +13,18 @@ path = r'/Users/i0557167/Documents/Git/Statistical-Forecasting/adjcov-dist/data/
 all_files = glob.glob(os.path.join(path, "*.csv"))
 
 df = pd.concat((pd.read_csv(f) for f in all_files), ignore_index=True)
-df_forecastable = df.loc[df.is_forecastable == True]
+df_forecastable = df.loc[(df.is_forecastable == True) & (df.item_usage_rule == 'Use')]
 df_forecastable.fillna('NA', inplace=True) # pandas is reading the string 'NA' as a NaN values.
 #aux = pd.read_csv('/Users/i0557167/Documents/Git/Statistical-Forecasting/adjcov-dist/data/dataRO.csv', keep_default_na=False, na_values=['_'])
 #df_forecastable.loc[df_forecastable.market_code.isna()]['market_code'] = 'NA'
 
 #df = pd.read_csv('/Users/i0557167/Documents/Git/Statistical-Forecasting/adjcov-dist/data/dataMA.csv')
 
-sanofi_colors = ["#7A00E6","#23004C","#CA8FFF","#007FAD","#F38DE4"]
+sanofi_colors = ["#7A00E6","#CA8FFF","#007FAD","#F38DE4"]
 sns.set_palette(sns.color_palette(sanofi_colors))
 
 latam = ['BR','AR']
-asea = ['AE','DZ','EG','MA','NA','SA','TN','TR','ZA','CN','HK','IN','KR','TH','JP']
+asea = ['AE','DZ','EG','MA','NA','SA','TN','TR','ZA','CN','HK','IN','KR','PH','JP']
 europe = ['AE', 'AT', 'BE', 'CH', 'CY', 'DE', 'GB', 'GR', 'NL', 'IE','DT', 'ES', 'FR', 'IT', 'PT','CZ', 'HU', 'MD', 'PL', 'RO', 'SK', 'TN']
 north_america = ['CA','US' ]
 
@@ -69,10 +69,19 @@ df_forecastable_north_america = pd.pivot_table(df_forecastable_north_america, va
 
 #df_final.describe()
 
-ax_latam = sns.boxplot(data=df_forecastable_latam)
+#ax_latam = sns.boxplot(data=df_forecastable_latam)
+#ax_latam.axhline(0.4, ls = '--', c = 'blue')
+#ax_latam.axhline(0.5, ls = '--', c = 'red')
 ax_asea = sns.boxplot(data=df_forecastable_asea)
-ax_europe = sns.boxplot(data=df_forecastable_europe)
-ax_north_america = sns.boxplot(data=df_forecastable_north_america)
+ax_asea.axhline(0.4, ls = '--', c = 'blue')
+ax_asea.axhline(0.5, ls = '--', c = 'red')
+#ax_europe = sns.boxplot(data=df_forecastable_europe)
+#ax_europe.axhline(0.4, ls = '--', c = 'blue')
+#ax_europe.axhline(0.5, ls = '--', c = 'red')
+#ax_north_america = sns.boxplot(data=df_forecastable_north_america)
+#ax_north_america.axhline(0.4, ls = '--', c = 'blue')
+#ax_north_america.axhline(0.5, ls = '--', c = 'red')
+
 
 #x, y = ax.lines[0].get_data()
 
