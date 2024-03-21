@@ -83,16 +83,43 @@ my_scope_simple = filtered_my_scope[columns_to_keep]
 
 
 
-# FORECASTABILITY CHECK 
+# 2/. FORECASTABILITY CHECK 
 # list of forecastable items but under ignore and manual
-
 new_forecastable = forecastability[(forecastability.baseline == '1. Manual') & (forecastability.is_forecastable == True) & (forecastability.item_usage_rule == 'Ignore')]
+# new forecastable items keys
+new_forecastable_items_list = new_forecastable['forecast_item'].tolist()
+# filtering rows from the config file with only the new forecastable items
+configuration_new_forecastable = my_scope_simple[my_scope_simple['ITEM'].isin(new_forecastable_items_list)].reset_index(drop=True)
+# merging the info from config file with the acov and intermit columns by GMID key
+configuration_new_forecastable = pd.merge(configuration_new_forecastable,new_forecastable[['forecast_item','acov','intermit']],left_on="ITEM", right_on="forecast_item", how="outer").drop(columns=['forecast_item'])
 
-new_forecastable_items = new_forecastable['forecast_item'].tolist()
-configuration_new_forecastable = my_scope_simple[my_scope_simple['ITEM'].isin(new_forecastable_items)].reset_index(drop=True)
-
-# Filter df1 to keep only rows with matching keys
-matching_rows_forecastability = forecastability[forecastability['forecast_item'].isin(new_forecastable_items)].reset_index(drop=True)
 
 
-configuration_new_forecastable1 = pd.concat([configuration_new_forecastable,matching_rows_forecastability[['acov','intermit']]],axis=1).sort_values(by='acov',ascending=False)
+# 3/. OVERVIEW OF MY SCOPE
+# 3.1/. My active scope
+my_active_scope = my_scope_simple[(my_scope_simple.ACTIVE_BASELINE =='2. Statistical')&(my_scope_simple.TYPE != 'Prunned')].reset_index(drop=True)
+# geting the keys to match items from the forecastability table
+my_active_scope_items_list = my_active_scope['ITEM'].tolist()
+#getting only those rows with items in my active scope
+matching_rows_my_active_scope_forecastability = forecastability[forecastability['forecast_item'].isin(my_active_scope_items_list)].reset_index(drop=True)
+# merge the acov and intermitance info from forecastability table with my config table
+my_active_scope = pd.merge(my_active_scope,matching_rows_my_active_scope_forecastability[['forecast_item','acov','intermit']],left_on="ITEM", right_on="forecast_item", how="outer").drop(columns=['forecast_item'])
+my_active_scope.columns = my_active_scope.columns.str.upper()
+#number of items I have active
+number_active_scope = len(my_active_scope)
+
+# 3.2/. Check if I have manual items in use
+my_manual_use = my_scope_simple[(my_scope_simple.ACTIVE_BASELINE =='1. Manual')&(my_scope_simple.TYPE != 'Prunned') & (my_scope_simple.USAGE_RULE == 'Use')].reset_index(drop=True)
+
+# 3.3/. Check if I have stat items in ignore
+my_statistical_ignore = my_scope_simple[(my_scope_simple.ACTIVE_BASELINE =='2. Statistical')&(my_scope_simple.TYPE != 'Prunned') & (my_scope_simple.USAGE_RULE == 'Ignore')].reset_index(drop=True)
+
+#4/. TOP 10 BEST AND TOP 10 OFFENDERS
+
+#5/. LEG 1 AND LEG3 EVAL FOR NEW CHANGED ALGOS
+
+#6/. ZERO TOUCH LIST AND CHECK
+
+
+
+# Create a folder in the MAM with the files and extration and the report
