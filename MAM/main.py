@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import glob
 import os
+import source as sc
 
 #data path
 path = r'/Users/i0557167/Library/CloudStorage/OneDrive-Sanofi/Documents/Market/MAM/2024/MAR24/data/' 
@@ -13,6 +14,7 @@ sns.set_palette(sns.color_palette(sanofi_colors))
 
 
 monthly_kpi = pd.read_excel(path+'all_my_markets_YTD.xlsx') 
+six_months_kpi = pd.read_excel(path+'all_my_markets_last_6months_not_acumulated.xlsx')
 my_scope = pd.read_excel(path+'Configuration_ALL.xlsx', skiprows=3)
 leg1leg3 = pd.read_excel(path+'LEG1LEG3.xlsx')
 forecastability = pd.read_excel(path+'forecastability.xlsx')
@@ -120,9 +122,10 @@ filtered_country_monthly_kpi = monthly_kpi[monthly_kpi['MARKET'] == 'PHILIPPINES
 columns_to_convert = filtered_country_monthly_kpi.columns[5:17]
 
 # Cleaning KPI columns from non numeric characters
-# Convert non-numeric values to NaN and then replace NaNs with zeros
-for col in columns_to_convert:
-   filtered_country_monthly_kpi[col] = pd.to_numeric(filtered_country_monthly_kpi[col], errors='coerce').fillna("0")
+# Convert non-numeric values to NaN and then replace NaNs with zero
+
+filtered_country_monthly_kpi = sc.convert_columns_to_numeric(filtered_country_monthly_kpi, columns_to_convert)
+
 
 # Converting the KPI Columns to float
 filtered_country_monthly_kpi[columns_to_convert] = filtered_country_monthly_kpi[columns_to_convert].astype(float)
@@ -136,9 +139,28 @@ filtered_country_monthly_kpi[float_columns] *= 100
 
 sorted_df = filtered_country_monthly_kpi.sort_values(by='Volume', ascending=False).reset_index(drop=True)
 
+
+
+
+# it would be good to have last month evolution of these top 10 items
+
+filtered_country_6monthskpi = six_months_kpi[six_months_kpi['MARKET'] == 'PHILIPPINES']
+columns_to_convert2 = filtered_country_6monthskpi.columns[6:12]
+
+filtered_country_6monthskpi = sc.convert_columns_to_numeric(filtered_country_6monthskpi, columns_to_convert2)
+# Converting the KPI Columns to float
+filtered_country_6monthskpi[columns_to_convert2] = filtered_country_6monthskpi[columns_to_convert2].astype(float)
+float_columns2 = filtered_country_6monthskpi.select_dtypes(include='float').columns
+
+filtered_country_6monthskpi[float_columns2] *= 100 
+
+#-----------------------------------------------------------------
 #5/. LEG 1 AND LEG3 EVAL FOR NEW CHANGED ALGOS
 
-filtered_country_leg1leg3 = leg1leg3[leg1leg3['MARKET'] == 'PHILIPPINES'].reset_index(drop=True)
+#filtered_country_leg1leg3 = leg1leg3[leg1leg3['MARKET'] == 'PHILIPPINES'].reset_index(drop=True)
+
+# list of items I want to check leg1 leg 3 to see the evolutions of the algo study
+
 
 
 
