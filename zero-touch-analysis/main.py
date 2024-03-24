@@ -5,7 +5,7 @@ import glob
 import os
 
 
-path = r'/Users/i0557167/Documents/Git/Statistical-Forecasting/zero-touch-analysis/data' # use your path
+path = r'/Users/i0557167/Library/CloudStorage/OneDrive-Sanofi/Documents/Market/MAM/2024/MAR24/zero-touch/data' # use your path
 all_files = glob.glob(os.path.join(path, "*.csv"))
 
 df_forecastability = pd.concat((pd.read_csv(f) for f in all_files), ignore_index=True)

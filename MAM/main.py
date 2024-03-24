@@ -5,7 +5,7 @@ import glob
 import os
 
 #data path
-path = r'/Users/i0557167/Documents/Git/Statistical-Forecasting/MAM/data/' 
+path = r'/Users/i0557167/Library/CloudStorage/OneDrive-Sanofi/Documents/Market/MAM/2024/MAR24/data/' 
 
 #sanofi_colors = ["#7A00E6","#CA8FFF",₢,"#F38DE4","#62d488","#ed6c4e","#f6c243","#ca99f5"]
 sanofi_colors = ["#23004c","#7A00E6","#62d488","#ed6c4e","#f6c243","#ca99f5"]
@@ -30,12 +30,6 @@ unnamed_columns = my_scope.columns[my_scope.columns.str.contains('^UNNAMED')]
 columns_to_drop.extend(unnamed_columns)
 my_scope.drop(columns=columns_to_drop, axis=1, inplace=True)
 #nan_columns = my_scope.columns[my_scope.isna().any()].tolist()
-
-
-
-
-
-
 
 
 
@@ -115,11 +109,40 @@ my_manual_use = my_scope_simple[(my_scope_simple.ACTIVE_BASELINE =='1. Manual')&
 my_statistical_ignore = my_scope_simple[(my_scope_simple.ACTIVE_BASELINE =='2. Statistical')&(my_scope_simple.TYPE != 'Prunned') & (my_scope_simple.USAGE_RULE == 'Ignore')].reset_index(drop=True)
 
 #4/. TOP 10 BEST AND TOP 10 OFFENDERS
+        
+# 4.1/. TOP 10 OFFENDERS
+# filter for PHillipines
+
+filtered_country_monthly_kpi = monthly_kpi[monthly_kpi['MARKET'] == 'PHILIPPINES'].reset_index(drop=True)
+
+
+# Selecting KPI columns to be converted from Object to float
+columns_to_convert = filtered_country_monthly_kpi.columns[5:17]
+
+# Cleaning KPI columns from non numeric characters
+# Convert non-numeric values to NaN and then replace NaNs with zeros
+for col in columns_to_convert:
+   filtered_country_monthly_kpi[col] = pd.to_numeric(filtered_country_monthly_kpi[col], errors='coerce').fillna("0")
+
+# Converting the KPI Columns to float
+filtered_country_monthly_kpi[columns_to_convert] = filtered_country_monthly_kpi[columns_to_convert].astype(float)
+
+# selecting float columns to be multiplied by 100
+float_columns = filtered_country_monthly_kpi.select_dtypes(include='float').columns
+float_columns= float_columns.drop('Enrichment gain')# don't want multiply this one by 100
+filtered_country_monthly_kpi[float_columns] *= 100 
+
+# Sort by volume:
+
+sorted_df = filtered_country_monthly_kpi.sort_values(by='Volume', ascending=False).reset_index(drop=True)
 
 #5/. LEG 1 AND LEG3 EVAL FOR NEW CHANGED ALGOS
+
+filtered_country_leg1leg3 = leg1leg3[leg1leg3['MARKET'] == 'PHILIPPINES'].reset_index(drop=True)
+
+
 
 #6/. ZERO TOUCH LIST AND CHECK
 
 
 
-# Create a folder in the MAM with the files and extration and the report
