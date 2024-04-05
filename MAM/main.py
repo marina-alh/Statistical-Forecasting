@@ -1,10 +1,10 @@
 
-import pandas as pd
+
 import matplotlib.pyplot as plt
 import seaborn as sns
-import glob
-import os
 import source_module as sc
+import pandas as pd
+
 
 
 #data path
@@ -14,8 +14,8 @@ path = r'/Users/i0557167/Library/CloudStorage/OneDrive-Sanofi/Documents/Market/M
 sanofi_colors = ["#23004c","#7A00E6","#62d488","#ed6c4e","#f6c243","#ca99f5"]
 sns.set_palette(sns.color_palette(sanofi_colors))
 
-
-monthly_kpi = sc.read_xlsx_files(path+"YTD")
+# I do sceye extractions for each country separatly to preserve the relavite volume percentage number 
+monthly_kpi = sc.read_xlsx_files(path+"YTD") #This reads all sceye extractions and bind them to a single dataframe
 six_months_kpi = pd.read_excel(path+'all_my_markets_last_6months_not_acumulated.xlsx')
 my_scope = pd.read_excel(path+'Configuration_ALL.xlsx', skiprows=3)
 leg1leg3 = pd.read_excel(path+'LEG1LEG3.xlsx')

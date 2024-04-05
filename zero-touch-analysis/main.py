@@ -42,9 +42,9 @@ df_monthly = df_monthly.replace('-', 0)
 df_cumulative = df_cumulative.replace('-', 0)
 
 #marina_market_codes = {"INDIA": 'IN', "BRAZIL": 'BR', "KOREA": 'KR', "HONG KONG": 'HK', "PHILIPPINES": 'PH'}
-marina_market_codes = {"INDIA": 'IN'}
+marina_market_codes = {"KOREA": 'KR'}
 #marina_market = {"INDIA": 0.40, "BRAZIL": 0.45, "KOREA": 0.31, "HONG KONG": 0.36, "PHILIPPINES": 0.33}
-marina_market = {"INDIA": 0.40}
+marina_market = {"KOREA": 0.31}
 #nurdos_market = {"ALGERIA": 0.46, "EGYPT": 0.47, "MOROCCO": 0.35, "SOUTH AFRICA": 0.38, "TUNISIA": 0.35, "UNITED ARAB EMIRATES": 0.53, "SAUDI ARABIA": 0.53, "TURKEY": 0.53, "JAPAN": 0.19}
 #romina_market = {"ARGENTINA": 0.32, "POLAND": 0.45, "ROMANIA": 0.45, "HUNGARY": 0.35, "SLOVAKIA": 0.50, "CZECH REPUBLIC": 0.50, "MOLDOVA": 0.55}
 
@@ -80,7 +80,11 @@ final_df = pd.merge(final_df,df_acov)
 stat_MAPE_YTD_final = df_negative_enrichments.loc[:,["GMID","STAT_MAPE_YTD","FINAL_MAPE_YTD"]]
 final_df = pd.merge(final_df,stat_MAPE_YTD_final)
 
-final_df.reset_index(drop=True).to_excel(path+"/marina_zerotouch_IN.xlsx",index=False)
+final_df.reset_index(drop=True).to_excel(path+"/marina_zerotouch_KR.xlsx",index=False)
+
+keys = final_df.GMID.unique()
+
+stat_MAPE_YTD_final[stat_MAPE_YTD_final['GMID'].isin(keys)].reset_index(drop=True).to_excel(path+"/marina_zerotouch_KR_unique.xlsx",index=False)
 
 
 
